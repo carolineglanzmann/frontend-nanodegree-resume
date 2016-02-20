@@ -208,13 +208,14 @@ span {
   padding-bottom: 5%;
 }
 
-@media screen and (max-width: 370px){
+@media screen and (max-width: 400px){
   #header {
     width: 100%;
     max-width: 100%;
+    padding: 1.2em;
   }
   #workExperience {
-    padding: 1em;
+    padding: 1.2em;
   }
   .gray{
     width: 100%;
@@ -226,7 +227,19 @@ span {
     padding: 20px 20px 20px 0;
   }
   #education {
-    padding: 1em;
+    padding: 1.2em;
+  }
+  #lets-connect h2{
+    width: 100%;
+    position: relative;
+    z-index: 3;
+    padding: 0.5em 0.8em;
+  }
+
+  #footerContacts {
+    background: #4a4a4a;
+    padding: 1.2em;
+    width: 100%;
   }
 }
 
