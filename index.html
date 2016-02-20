@@ -42,17 +42,52 @@ need to load. You'll see a lot of <link>s to CSS files for styles and
   <!-- More on helper.js in the class -->
   <script src="js/helper.js"></script>
 
+
+  <!--- D3 SCRIPT -->
+  <script src="js/d3.min.js" charset="utf-8"></script>
+
   <!--
   Uncomment the <script> tag below when you're ready to add an interactive
   Google Map to your resume!
   -->
-<!-- <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places"></script> -->
+  <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places"></script> 
 
   <meta name="viewport" content="width=device-width">
+  <style>
+
+    .axis text {
+      font: 10px sans-serif;
+    }
+
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+    }
+
+    .hexagon {
+      fill: none;
+      stroke: #000;
+      stroke-width: .5px;
+    }
+
+    svg{
+      height: 100%;
+      max-width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      margin: 0 auto;
+    }
+
+   
+
+
+  </style>
+
 </head>
 <body>
   <div id="main">
-    Hello world!   <!-- You'll be deleting this line in the course -->
 
     <!--
     Everything from here to the <script> tag below is the skeleton of your
@@ -81,6 +116,7 @@ need to load. You'll see a lot of <link>s to CSS files for styles and
         <ul id="footerContacts" class="flex-box">
       </ul>
     </div>
+    
   </div>
 
   <!--
@@ -115,26 +151,146 @@ need to load. You'll see a lot of <link>s to CSS files for styles and
 
 
     if(document.getElementsByClassName('flex-item').length === 0) {
-      document.getElementById('topContacts').style.display = 'none';
+      //document.getElementById('topContacts').style.display = 'none';
+      document.getElementById('topContacts').style.backgroundColor = 'black';
     }
     if(document.getElementsByTagName('h1').length === 0) {
-      document.getElementById('header').style.display = 'none';
+      //document.getElementById('header').style.display = 'none';
+      document.getElementById('header').style.backgroundColor = 'black';
     }
     if(document.getElementsByClassName('work-entry').length === 0) {
       document.getElementById('workExperience').style.display = 'none';
     }
     if(document.getElementsByClassName('project-entry').length === 0) {
-      document.getElementById('projects').style.display = 'none';
+      //document.getElementById('projects').style.display = 'none';
+      document.getElementById('projects').style.backgroundColor = 'black';
     }
     if(document.getElementsByClassName('education-entry').length === 0) {
-      document.getElementById('education').style.display = 'none';
+      //document.getElementById('education').style.display = 'none';
+      document.getElementById('education').style.backgroundColor = 'black';
     }
     if(document.getElementsByClassName('flex-item').length === 0) {
-      document.getElementById('lets-connect').style.display = 'none';
+      //document.getElementById('lets-connect').style.display = 'none';
+      document.getElementById('lets-connect').style.backgroundColor = 'black';
     }
     if(document.getElementById('map') === null) {
-      document.getElementById('mapDiv').style.display = 'none';
+      //document.getElementById('mapDiv').style.display = 'none';
+      document.getElementById('mapDiv').style.backgroundColor = 'black';
     }
   </script>
+
+<script type="text/javascript">
+
+/*
+  var bardata = [20,100,85,60,200,20,100,85,60,200];
+
+  var height = 400,
+      width = 600,
+      barWidth = 50,
+      barOffset = 5;
+
+  var color = d3.scale.linear()
+    .domain([0, d3.max(bardata)])
+    .range(['hsl(62,100%,90%)', 'hsl(222,30%,20%)']);
+
+  var yScale = d3.scale.linear()
+    .domain([0, d3.max(bardata)])
+    .range([0, height])
+
+  var xScale = d3.scale.ordinal()
+    .domain(d3.range(0, bardata.length))
+    .rangeBands([0, width])
+
+  d3.select('#workExperience').append('svg')
+    .attr('width', width)
+    .attr('height', height)
+    .style('background', '#c9d7d6')
+    .selectAll('rect').data(bardata)
+    .enter().append('rect')
+      .style('fill', color)
+      .attr('height', function(d){
+        return yScale(d);
+      })
+      .attr('width', xScale.rangeBand())
+      .attr('y', function(d){
+        return height - yScale(d);
+      })
+      .attr('x', function(d,i){
+        return xScale(i); 
+      })
+*/
+
+
+
+
+
+
+  var spaces = [
+    {name: "Mobile Games", interpolate: d3.interpolateHsl},
+    {name: "Yoga", interpolate: d3.interpolateHcl},
+    {name: "Dogs", interpolate: d3.interpolateLab},
+    {name: "Movies", interpolate: d3.interpolateRgb}
+  ];
+
+  var y = d3.scale.ordinal()
+      .domain(spaces.map(function(d) { return d.name; }))
+      .rangeRoundBands([0, 500], .09);
+
+  var margin = y.range()[0],
+      width = 1400 - margin - margin,
+      height = y.rangeBand();
+
+  var color = d3.scale.linear()
+      .domain([0, width])
+      .range(["hsl(62,100%,90%)", "hsl(222,30%,20%)"]);
+
+
+  var space = d3.select("#chart").selectAll(".space")
+      .data(spaces)
+    .enter().append("div")
+      .attr("class", "space")
+      .style("width", width + "px")
+      .style("height", height + "px")
+      .style("left", margin + "px")
+      .style("top", function(d, i) { return y(d.name) + "px"; });
+
+  space.append("canvas")
+      .attr("width", width)
+      .attr("height", 1)
+      .style("width", width + "px")
+      .style("height", height + "px")
+      .each(render);
+
+  space.append("div")
+      .style("line-height", height + "px")
+      .text(function(d) { return d.name; });
+
+  function render(d) {
+    var context = this.getContext("2d"),
+        image = context.createImageData(width, 1);
+    color.interpolate(d.interpolate);
+    for (var i = 0, j = -1, c; i < width; ++i) {
+      c = d3.rgb(color(i));
+      image.data[++j] = c.r;
+      image.data[++j] = c.g;
+      image.data[++j] = c.b;
+      image.data[++j] = 255;
+    }
+    context.putImageData(image, 0, 0);
+  }
+
+d3.select(window).on('resize', resize);
+
+ function resize(){
+     var margin = y.range()[0],
+      width = 400 - margin - margin,
+      height = y.rangeBand();
+ }
+
+
+
+</script>
+
+ 
 </body>
 </html>
